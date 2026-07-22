@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Attendance Tracker</title>
+
+  <link rel="stylesheet" href="styles/style.css">
+</head>
+
+<body>
+
+  <header>
+
+    <h1>📚 Student Attendance Tracker</h1>
+
+  </header>
+
+  <!-- ================= ADD SUBJECT ================= -->
+
+  <section class="add-subject">
+
+    <h2>Add Subject</h2>
+
+    <div class="form-row">
+
+      <input type="text" id="subjectName" placeholder="Subject Name">
+
+      <input type="number" id="attendanceValue" placeholder="Attendance Per Class" min="0.25" step="0.25" value="1">
+
+      <button id="addSubjectBtn">
+        Add Subject
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- ================= OVERALL SUMMARY ================= -->
+
+  <section class="overall-summary">
+
+    <div class="summary-card">
+
+      <h3>Total Present</h3>
+
+      <p id="overallPresent">
+        0
+      </p>
+
+    </div>
+
+    <div class="summary-card">
+
+      <h3>Total Classes</h3>
+
+      <p id="overallTotal">
+        0
+      </p>
+
+    </div>
+
+    <div class="summary-card">
+
+      <h3>Attendance %</h3>
+
+      <p id="overallPercentage">
+        0%
+      </p>
+
+    </div>
+
+  </section>
+
+  <!-- ================= SUBJECT LIST ================= -->
+
+  <section>
+
+    <h2 class="subject-heading">
+      Subjects
+    </h2>
+
+    <div id="subjectContainer">
+
+      <!-- Subjects will appear here -->
+
+    </div>
+
+  </section>
+
+  <!-- ================= CALENDAR MODAL ================= -->
+
+
+
+  <!-- ================= SUBJECT CARD TEMPLATE ================= -->
+
+  <template id="subjectTemplate">
+
+    <div class="subject-card">
+
+      <div class="card-top">
+
+        <h2 class="subject-title">
+
+          Subject
+
+        </h2>
+
+        <button class="delete-btn">
+
+          🗑
+
+        </button>
+
+      </div>
+
+      <p>
+
+        Attendance / Class :
+
+        <span class="attendance-value">
+
+          1
+
+        </span>
+
+      </p>
+
+      <div class="stats">
+
+        <div>
+
+          Present
+
+          <span class="present-count">
+
+            0
+
+          </span>
+
+        </div>
+
+        <div>
+
+          Total
+
+          <span class="total-count">
+
+            0
+
+          </span>
+
+        </div>
+
+        <div>
+
+          Percentage
+
+          <span class="percentage">
+
+            0%
+
+          </span>
+
+        </div>
+
+      </div>
+
+      <div class="button-group">
+
+        <button class="present-btn">
+
+          ✅ Present Today
+
+        </button>
+
+        <button class="absent-btn">
+
+          ❌ Absent Today
+
+        </button>
+
+      </div>
+
+      <div class="button-group">
+
+        <button class="increment-btn">
+
+          ➕
+
+        </button>
+
+        <button class="decrement-btn">
+
+          ➖
+
+        </button>
+
+        <button class="calendar-btn">
+
+          📅 Calendar
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </template>
+
+  <div id="calendarModal" class="modal">
+
+    <div class="modal-content">
+
+      <button onclick="closeCalendar()">✖</button>
+
+      <div class="calendar-header">
+
+        <button onclick="prevMonth()">◀</button>
+
+        <h2 id="monthYear"></h2>
+
+        <button onclick="nextMonth()">▶</button>
+
+      </div>
+
+      <div id="calendar" class="calendar"></div>
+
+    </div>
+
+  </div>
+
+  <!-- <script src="js/storage.js"></script>
+  <script src="js/attendance.js"></script>
+  <script src="js/subjects.js"></script>
+  <script src="js/calendar.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/script.js"></script> -->
+  <script src="js/scripts.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,484 @@
+/* ===========================
+   RESET
+=========================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  background: #f4f6fa;
+  color: #222;
+  padding: 20px;
+}
+
+/* ===========================
+   HEADER
+=========================== */
+
+header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+header h1 {
+  color: #2d6cdf;
+  font-size: 32px;
+}
+
+/* ===========================
+   ADD SUBJECT
+=========================== */
+
+.add-subject {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
+  margin-bottom: 25px;
+}
+
+.add-subject h2 {
+  margin-bottom: 15px;
+}
+
+.form-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.form-row input {
+  flex: 1;
+  min-width: 180px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+.form-row button {
+  background: #2d6cdf;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: .25s;
+}
+
+.form-row button:hover {
+  background: #1d57c5;
+}
+
+/* ===========================
+   SUMMARY
+=========================== */
+
+.overall-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.summary-card {
+  background: white;
+  border-radius: 12px;
+  padding: 18px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
+}
+
+.summary-card h3 {
+  margin-bottom: 10px;
+}
+
+.summary-card p {
+  font-size: 28px;
+  font-weight: bold;
+  color: #2d6cdf;
+}
+
+/* ===========================
+   SUBJECT LIST
+=========================== */
+
+.subject-heading {
+  margin-bottom: 15px;
+}
+
+#subjectContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+/* ===========================
+   SUBJECT CARD
+=========================== */
+
+.subject-card {
+  background: white;
+  border-radius: 15px;
+  padding: 18px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
+  transition: .25s;
+}
+
+.subject-card:hover {
+  transform: translateY(-4px);
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.subject-title {
+  color: #2d6cdf;
+}
+
+.delete-btn {
+  border: none;
+  background: #ff4d4d;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background: #d63031;
+}
+
+/* ===========================
+   STATS
+=========================== */
+
+.stats {
+  margin: 18px 0;
+}
+
+.stats div {
+  display: flex;
+  justify-content: space-between;
+  margin: 8px 0;
+  font-size: 16px;
+}
+
+/* ===========================
+   BUTTONS
+=========================== */
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.button-group button {
+  flex: 1;
+  border: none;
+  padding: 11px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: .25s;
+  font-size: 14px;
+}
+
+.present-btn {
+  background: #2ecc71;
+  color: white;
+}
+
+.present-btn:hover {
+  background: #24b765;
+}
+
+.absent-btn {
+  background: #e74c3c;
+  color: white;
+}
+
+.absent-btn:hover {
+  background: #cb3f31;
+}
+
+.increment-btn {
+  background: #3498db;
+  color: white;
+}
+
+.increment-btn:hover {
+  background: #2b84c0;
+}
+
+.decrement-btn {
+  background: #f39c12;
+  color: white;
+}
+
+.decrement-btn:hover {
+  background: #da8b0c;
+}
+
+.calendar-btn {
+  background: #6c5ce7;
+  color: white;
+}
+
+.calendar-btn:hover {
+  background: #5848cf;
+}
+
+/* ===========================
+   MODAL
+=========================== */
+
+.modal {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, .45);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: white;
+  width: 95%;
+  max-width: 850px;
+  border-radius: 15px;
+  padding: 20px;
+}
+
+/* ===========================
+   CALENDAR HEADER
+=========================== */
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.calendar-header button {
+  border: none;
+  background: #2d6cdf;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* ===========================
+   WEEKDAYS
+=========================== */
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.weekdays div {
+  padding: 10px;
+}
+
+/* ===========================
+   CALENDAR GRID
+=========================== */
+
+#calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+.day {
+  min-height: 80px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: .2s;
+  background: white;
+}
+
+.day:hover {
+  transform: scale(1.05);
+}
+
+.empty {
+  background: transparent;
+  border: none;
+  cursor: default;
+}
+
+/* ===========================
+   COLORS
+=========================== */
+
+.present {
+  background: #3498db;
+  color: white;
+}
+
+.absent {
+  background: #e74c3c;
+  color: white;
+}
+
+.today {
+  border: 3px solid #2ecc71;
+}
+
+/* ===========================
+   LEGEND
+=========================== */
+
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 25px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.box {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.blue {
+  background: #3498db;
+}
+
+.red {
+  background: #e74c3c;
+}
+
+.white {
+  background: white;
+  border: 1px solid #aaa;
+}
+
+/* ===========================
+   CLOSE BUTTON
+=========================== */
+
+.calendar-buttons {
+  margin-top: 25px;
+  text-align: center;
+}
+
+.calendar-buttons button {
+  border: none;
+  background: #444;
+  color: white;
+  padding: 12px 28px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.calendar-buttons button:hover {
+  background: #222;
+}
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+
+@media(max-width:700px) {
+
+  header h1 {
+    font-size: 25px;
+  }
+
+  .form-row {
+    flex-direction: column;
+  }
+
+  .button-group {
+    flex-direction: column;
+  }
+
+  .day {
+    min-height: 55px;
+    font-size: 14px;
+  }
+
+  .weekdays div {
+    font-size: 13px;
+  }
+
+}
+
+/* ///////////////////////////// */
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .4);
+}
+
+.modal-content {
+  background: #fff;
+  width: 420px;
+  margin: 40px auto;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.day {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.present {
+  background: #4caf50;
+  color: #fff;
+}
+
+.absent {
+  background: #f44336;
+  color: #fff;
+}
+
+.today {
+  border: 2px solid blue;
+}
