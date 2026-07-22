@@ -269,15 +269,7 @@ function renderSubjects() {
       .onclick = () =>
         openCalendar(subject);
 
-    // Placeholder
-    card.querySelector(".increment-btn")
-      .onclick = () =>
-        alert("+ feature in Part 3");
 
-    // Placeholder
-    card.querySelector(".decrement-btn")
-      .onclick = () =>
-        alert("- feature in Part 3");
 
     subjectContainer.appendChild(card);
 

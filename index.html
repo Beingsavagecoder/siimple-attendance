@@ -4,208 +4,98 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Attendance Tracker</title>
+  <title>Attendance Tracker</title>
 
   <link rel="stylesheet" href="styles/style.css">
 </head>
 
 <body>
 
-  <header>
+  <h1>📚 Attendance Tracker</h1>
 
-    <h1>📚 Student Attendance Tracker</h1>
+  <div class="add">
 
-  </header>
+    <input id="subjectName" placeholder="Subject">
 
-  <!-- ================= ADD SUBJECT ================= -->
+    <input id="attendanceValue" type="number" value="1" min="0.25" step="0.25">
 
-  <section class="add-subject">
+    <button id="addSubjectBtn">
+      Add
+    </button>
 
-    <h2>Add Subject</h2>
+  </div>
 
-    <div class="form-row">
+  <div class="summary">
 
-      <input type="text" id="subjectName" placeholder="Subject Name">
+    <span>Present :
+      <b id="overallPresent">0</b>
+    </span>
 
-      <input type="number" id="attendanceValue" placeholder="Attendance Per Class" min="0.25" step="0.25" value="1">
+    <span>Total :
+      <b id="overallTotal">0</b>
+    </span>
 
-      <button id="addSubjectBtn">
-        Add Subject
-      </button>
+    <span>Attendance :
+      <b id="overallPercentage">0%</b>
+    </span>
 
-    </div>
+  </div>
 
-  </section>
+  <table>
 
-  <!-- ================= OVERALL SUMMARY ================= -->
+    <thead>
 
-  <section class="overall-summary">
+      <tr>
 
-    <div class="summary-card">
+        <th>Subject</th>
 
-      <h3>Total Present</h3>
+        <th>Value</th>
 
-      <p id="overallPresent">
-        0
-      </p>
+        <th>Present</th>
 
-    </div>
+        <th>Total</th>
 
-    <div class="summary-card">
+        <th>%</th>
 
-      <h3>Total Classes</h3>
+        <th>Actions</th>
 
-      <p id="overallTotal">
-        0
-      </p>
+      </tr>
 
-    </div>
+    </thead>
 
-    <div class="summary-card">
+    <tbody id="subjectContainer">
 
-      <h3>Attendance %</h3>
+    </tbody>
 
-      <p id="overallPercentage">
-        0%
-      </p>
-
-    </div>
-
-  </section>
-
-  <!-- ================= SUBJECT LIST ================= -->
-
-  <section>
-
-    <h2 class="subject-heading">
-      Subjects
-    </h2>
-
-    <div id="subjectContainer">
-
-      <!-- Subjects will appear here -->
-
-    </div>
-
-  </section>
-
-  <!-- ================= CALENDAR MODAL ================= -->
-
-
-
-  <!-- ================= SUBJECT CARD TEMPLATE ================= -->
+  </table>
 
   <template id="subjectTemplate">
 
-    <div class="subject-card">
+    <tr>
 
-      <div class="card-top">
+      <td class="subject-title"></td>
 
-        <h2 class="subject-title">
+      <td class="attendance-value"></td>
 
-          Subject
+      <td class="present-count"></td>
 
-        </h2>
+      <td class="total-count"></td>
 
-        <button class="delete-btn">
+      <td class="percentage"></td>
 
-          🗑
+      <td>
 
-        </button>
+        <button class="present-btn">✓</button>
 
-      </div>
+        <button class="absent-btn">✗</button>
 
-      <p>
+        <button class="calendar-btn">📅</button>
 
-        Attendance / Class :
+        <button class="delete-btn">🗑</button>
 
-        <span class="attendance-value">
+      </td>
 
-          1
-
-        </span>
-
-      </p>
-
-      <div class="stats">
-
-        <div>
-
-          Present
-
-          <span class="present-count">
-
-            0
-
-          </span>
-
-        </div>
-
-        <div>
-
-          Total
-
-          <span class="total-count">
-
-            0
-
-          </span>
-
-        </div>
-
-        <div>
-
-          Percentage
-
-          <span class="percentage">
-
-            0%
-
-          </span>
-
-        </div>
-
-      </div>
-
-      <div class="button-group">
-
-        <button class="present-btn">
-
-          ✅ Present Today
-
-        </button>
-
-        <button class="absent-btn">
-
-          ❌ Absent Today
-
-        </button>
-
-      </div>
-
-      <div class="button-group">
-
-        <button class="increment-btn">
-
-          ➕
-
-        </button>
-
-        <button class="decrement-btn">
-
-          ➖
-
-        </button>
-
-        <button class="calendar-btn">
-
-          📅 Calendar
-
-        </button>
-
-      </div>
-
-    </div>
+    </tr>
 
   </template>
 
@@ -231,12 +121,6 @@
 
   </div>
 
-  <!-- <script src="js/storage.js"></script>
-  <script src="js/attendance.js"></script>
-  <script src="js/subjects.js"></script>
-  <script src="js/calendar.js"></script>
-  <script src="js/ui.js"></script>
-  <script src="js/script.js"></script> -->
   <script src="js/scripts.js"></script>
 
 </body>
