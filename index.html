@@ -5,13 +5,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Attendance Tracker</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
 
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles/style.css">
+
 </head>
 
 <body>
 
-  <h1>📚 Attendance Tracker</h1>
+  <h1> 🧘𝗦𝗶𝗶𝗺𝗽𝗹𝗲 Attendance🧘 </h1>
+
 
   <div class="add">
 
@@ -25,21 +29,6 @@
 
   </div>
 
-  <div class="summary">
-
-    <span>Present :
-      <b id="overallPresent">0</b>
-    </span>
-
-    <span>Total :
-      <b id="overallTotal">0</b>
-    </span>
-
-    <span>Attendance :
-      <b id="overallPercentage">0%</b>
-    </span>
-
-  </div>
 
   <table>
 
@@ -83,21 +72,36 @@
 
       <td class="percentage"></td>
 
-      <td>
-
-        <button class="present-btn">✓</button>
-
-        <button class="absent-btn">✗</button>
-
-        <button class="calendar-btn">📅</button>
+      <td class="actions">
+        <div class="action-left">
+          <button class="present-btn">✓</button>
+          <button class="absent-btn">✗</button>
+          <button class="calendar-btn">📅</button>
+        </div>
 
         <button class="delete-btn">🗑</button>
-
       </td>
 
     </tr>
 
   </template>
+
+  <div class="summary">
+
+    <span>Present :
+      <b id="overallPresent">0</b>
+    </span>
+
+    <span>Total :
+      <b id="overallTotal">0</b>
+    </span>
+
+    <span>Attendance :
+      <b id="overallPercentage">0%</b>
+    </span>
+
+  </div>
+
 
   <div id="calendarModal" class="modal">
 
