@@ -369,18 +369,23 @@ function toggleAttendance(date) {
 
   const currentStatus = currentSubject.records[date];
 
-  if (currentStatus === "P")
+  if (currentStatus === "P") {
+
     currentSubject.records[date] = "A";
 
-  else
+  } else if (currentStatus === "A") {
+
+    delete currentSubject.records[date];   // Remove attendance completely
+
+  } else {
+
     currentSubject.records[date] = "P";
 
+  }
+
   saveData();
-
   drawCalendar();
-
   renderSubjects();
-
 }
 
 function prevMonth() {
