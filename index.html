@@ -21,10 +21,31 @@
 
     <input id="subjectName" placeholder="Subject">
 
-    <input id="attendanceValue" type="number" value="1" min="0.25" step="0.25">
+    <input id="attendanceValue" placeholder="attendance-count per present" type="number" value="1" min="0.25"
+      step="0.25">
 
     <button id="addSubjectBtn">
-      Add
+      <span style="
+    font-size: 30px;
+    font-weight: 1000;
+    padding-bottom: 2px;
+    color: #2d6cdf;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 25px;
+    height: 25px;
+
+    border-radius: 50%;
+    background: #eef4ff;
+    border: 1px solid #e7ea1d
+;
+    cursor: pointer;
+    transition: .2s;
+">
+        +
+      </span>
     </button>
 
   </div>
@@ -38,15 +59,16 @@
 
         <th>Subject</th>
 
-        <th>Value</th>
+
+
+        <th>Actions</th>
+        <th>Hrs(periods)</th>
 
         <th>Present</th>
 
         <th>Total</th>
 
         <th>%</th>
-
-        <th>Actions</th>
 
       </tr>
 
@@ -64,13 +86,7 @@
 
       <td class="subject-title"></td>
 
-      <td class="attendance-value"></td>
 
-      <td class="present-count"></td>
-
-      <td class="total-count"></td>
-
-      <td class="percentage"></td>
 
       <td class="actions">
         <div class="action-left">
@@ -78,25 +94,33 @@
           <button class="absent-btn">✗</button>
           <button class="calendar-btn">📅</button>
         </div>
+      </td>
+      <td class="attendance-value"></td>
 
+      <td class="present-count"></td>
+
+      <td class="total-count"></td>
+
+      <td class="percentage"></td>
+      <td></td>
+      <td>
         <button class="delete-btn">🗑</button>
       </td>
-
     </tr>
 
   </template>
 
   <div class="summary">
 
-    <span>Present :
+    <span>Present periods :
       <b id="overallPresent">0</b>
     </span>
 
-    <span>Total :
+    <span>Total periods:
       <b id="overallTotal">0</b>
     </span>
 
-    <span>Attendance :
+    <span>Attendance overall:
       <b id="overallPercentage">0%</b>
     </span>
 
@@ -107,7 +131,10 @@
 
     <div class="modal-content">
 
-      <button onclick="closeCalendar()">✖</button>
+      <div><button class="close-btn" onclick="closeCalendar()">
+          ✕
+        </button>
+      </div>
 
       <div class="calendar-header">
 
