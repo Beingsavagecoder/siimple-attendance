@@ -2,6 +2,13 @@
 <html lang="en">
 
 <head>
+
+  <link rel="manifest" href="manifest.json">
+
+  <meta name="theme-color" content="#2196f3">
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Attendance Tracker</title>
@@ -153,6 +160,12 @@
   </div>
 
   <script src="js/scripts.js"></script>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./sw.js");
+    }
+  </script>
 
 </body>
 
