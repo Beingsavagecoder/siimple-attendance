@@ -147,23 +147,15 @@ function calculate(subject) {
 
   for (const date in subject.records) {
 
-    const status = subject.records[date];
+    const value = subject.records[date];
 
-    if (status === "P") {
-
+    if (value > 0)
       present += value;
 
-      total += value;
-
-    }
-
-    if (status === "A") {
-
-      total += value;
-
-    }
+    total += Math.abs(value);
 
   }
+
 
   return {
 
@@ -213,14 +205,17 @@ function updateOverall() {
 
 // ---------- TODAY BUTTONS ----------
 
-function markToday(subject, status) {
+function markToday(subject, value) {
+  const date = today();
 
-  subject.records[today()] = status;
+  if (!subject.records[date]) {
+    subject.records[date] = 0;
+  }
+
+  subject.records[date] += value;
 
   saveData();
-
   renderSubjects();
-
 }
 
 // ---------- RENDER ----------
@@ -252,13 +247,29 @@ function renderSubjects() {
     card.querySelector(".percentage")
       .textContent = stats.percentage + "%";
 
+    //todays count  span update (0)
+    const todayValue = subject.records[today()] || 0;
+
+    const todayCount = card.querySelector(".today-count"); // class of the "0"
+    todayCount.textContent = todayValue;
+
+    if (todayValue > 0) {
+      todayCount.style.color = "green";
+    } else if (todayValue < 0) {
+      todayCount.style.color = "red";
+    } else {
+      todayCount.style.color = "black";
+    }
+
+    //
+
     card.querySelector(".present-btn")
       .onclick = () =>
-        markToday(subject, "P");
+        markToday(subject, subject.attendanceValue);
 
     card.querySelector(".absent-btn")
       .onclick = () =>
-        markToday(subject, "A");
+        markToday(subject, -subject.attendanceValue);
 
     card.querySelector(".delete-btn")
       .onclick = () =>
@@ -309,6 +320,16 @@ function closeCalendar() {
 
 }
 
+const modal = document.getElementById("calendarModal");
+
+modal.addEventListener("click", function (e) {
+  if (e.target === modal) {
+    selectedDate = null;
+    selectedCell = null;
+    closeCalendar();
+  }
+});
+
 function drawCalendar() {
 
   const year = current.getFullYear();
@@ -338,12 +359,12 @@ function drawCalendar() {
 
     let cls = "";
 
-    const status = currentSubject.records[date];
+    const value = currentSubject.records[date] || 0;
 
-    if (status === "P")
+    if (value > 0)
       cls = "present";
 
-    if (status === "A")
+    if (value < 0)
       cls = "absent";
 
     const now = new Date();
@@ -356,37 +377,90 @@ function drawCalendar() {
       cls += " today";
     }
 
+
     calendar.innerHTML += `
         <div class="day ${cls}"
-             onclick="toggleAttendance('${date}')">
+             onclick="openDayPopup('${date}',this)">
              ${d}
         </div>`;
   }
 
 }
 
-function toggleAttendance(date) {
+// open popup on date click
+let selectedDate = null;
+let selectedCell = null;
 
-  const currentStatus = currentSubject.records[date];
 
-  if (currentStatus === "P") {
+function openDayPopup(date, cell) {
 
-    currentSubject.records[date] = "A";
 
-  } else if (currentStatus === "A") {
+  selectedDate = date;
 
-    delete currentSubject.records[date];   // Remove attendance completely
+  const value = currentSubject.records[date] || 0;
 
-  } else {
+  const popup = document.getElementById("dayPopup");
+  const count = document.getElementById("dayCount");
 
-    currentSubject.records[date] = "P";
+  count.textContent = value;
 
-  }
+  if (value > 0)
+    count.style.color = "green";
+  else if (value < 0)
+    count.style.color = "red";
+  else
+    count.style.color = "black";
+
+  // position below clicked day
+  const rect = cell.getBoundingClientRect();
+
+  popup.style.position = "fixed";
+  popup.style.left = rect.left + "px";
+  popup.style.top = (rect.bottom + 6) + "px";
+  popup.style.display = "block";
+
+
+}
+
+document.getElementById("plusDay").onclick = function () {
+
+  currentSubject.records[selectedDate] =
+    (currentSubject.records[selectedDate] || 0)
+    + currentSubject.attendanceValue;
 
   saveData();
   drawCalendar();
   renderSubjects();
-}
+
+  openDayPopup(selectedDate, selectedCell); // refresh number
+};
+
+
+document.getElementById("minusDay").onclick = function () {
+
+  currentSubject.records[selectedDate] =
+    (currentSubject.records[selectedDate] || 0)
+    - currentSubject.attendanceValue;
+
+  saveData();
+  drawCalendar();
+  renderSubjects();
+
+  openDayPopup(selectedDate, selectedCell); // refresh number
+};
+
+document.addEventListener("click", function (e) {
+  const popup = document.getElementById("dayPopup");
+
+  if (
+    popup.style.display === "block" &&
+    !popup.contains(e.target) &&
+    !e.target.closest(".day")
+  ) {
+    popup.style.display = "none";
+  }
+});
+
 
 function prevMonth() {
 
@@ -403,6 +477,46 @@ function nextMonth() {
   drawCalendar();
 
 }
+
+// table column resizable//
+
+let currentTh;
+let startX;
+let startWidth;
+
+document.querySelectorAll(".resize-handle").forEach(handle => {
+
+  handle.addEventListener("mousedown", function (e) {
+
+    currentTh = this.parentElement;
+    startX = e.pageX;
+    startWidth = currentTh.offsetWidth;
+
+    document.addEventListener("mousemove", resizeColumn);
+    document.addEventListener("mouseup", stopResize);
+
+    e.preventDefault();
+  });
+
+});
+
+function resizeColumn(e) {
+
+  const width = startWidth + (e.pageX - startX);
+
+  if (width > 40) {
+    currentTh.style.width = width + "px";
+  }
+
+}
+
+function stopResize() {
+
+  document.removeEventListener("mousemove", resizeColumn);
+  document.removeEventListener("mouseup", stopResize);
+
+}
+// 
 
 
 // ---------- START ----------

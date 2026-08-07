@@ -68,15 +68,16 @@
 
 
 
-        <th>Actions</th>
-        <th>Hrs(periods)</th>
+        <th>TODAY's</th>
+        <th>ANYDAY</th>
+        <th>Hours</th>
 
         <th>Present</th>
 
         <th>Total</th>
 
         <th>%</th>
-
+        <th>del</th>
       </tr>
 
     </thead>
@@ -97,11 +98,13 @@
 
       <td class="actions">
         <div class="action-left">
-          <button class="present-btn">✓</button>
-          <button class="absent-btn">✗</button>
-          <button class="calendar-btn">📅</button>
+          <button class="present-btn">+</button>
+          <p class="today-count">0</p>
+          <button class="absent-btn">-</button>
+
         </div>
       </td>
+      <td><button class="calendar-btn">📅</button></td>
       <td class="attendance-value"></td>
 
       <td class="present-count"></td>
@@ -109,7 +112,6 @@
       <td class="total-count"></td>
 
       <td class="percentage"></td>
-      <td></td>
       <td>
         <button class="delete-btn">🗑</button>
       </td>
@@ -124,7 +126,7 @@
     </span>
 
     <span>Total periods:
-      <b id="overallTotal">0</b>
+      <b id="overallTotal"> 0 </b>
     </span>
 
     <span>Attendance overall:
@@ -145,6 +147,17 @@
 
       <div class="calendar-header">
 
+        <!--date count popup-->
+        <div id="dayPopup" class="popup">
+          <button id="plusDay">+</button>
+
+          <span id="dayCount">0</span>
+
+          <button id="minusDay">-</button>
+
+        </div>
+        <!---->
+
         <button onclick="prevMonth()">◀</button>
 
         <h2 id="monthYear"></h2>
@@ -158,6 +171,8 @@
     </div>
 
   </div>
+
+
 
   <script src="js/scripts.js"></script>
 
