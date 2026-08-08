@@ -335,7 +335,7 @@ button {
 }
 
 .modal-content {
-  width: min(600px, 70%);
+  width: min(600px, 90%);
   margin: 30px auto;
   background: white;
   border-radius: 60px;
@@ -424,6 +424,7 @@ button {
 
 .day:hover {
   transform: scale(1.5);
+  color: #0539ab;
 }
 
 .present {
