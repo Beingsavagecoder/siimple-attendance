@@ -1,4 +1,4 @@
-const CACHE = "attendance-v1";
+const CACHE = "attendance-v2";
 
 const FILES = [
   "./",
@@ -13,6 +13,18 @@ const FILES = [
 self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE).then(cache => cache.addAll(FILES))
+  );
+});
+
+self.addEventListener("activate", event => {
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames
+          .filter(name => name !== CACHE)
+          .map(name => caches.delete(name))
+      );
+    })
   );
 });
 
