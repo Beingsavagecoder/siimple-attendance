@@ -2,167 +2,376 @@
 <html lang="en">
 
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <link rel="manifest" href="/manifest.json">
   <title>Attendance Tracker</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon">
 
+  <!-- Merriweather -->
   <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles/style.css">
 
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    h1 {
+      font-family: 'Merriweather', serif;
+    }
+
+    /* Prevent table from breaking badly on small screens */
+    .table-wrapper {
+      overflow-x: auto;
+      width: 100%;
+    }
+
+    table {
+      border-collapse: collapse;
+      min-width: 750px;
+    }
+
+    /* Calendar day styling */
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+  </style>
 </head>
 
-<body>
+<body class="bg-gray-100 min-h-screen text-gray-800">
 
-  <h1> 🧘𝗦𝗶𝗶𝗺𝗽𝗹𝗲 Attendance🧘 </h1>
+  <!-- Main phone-sized container -->
+  <main class="w-full max-w-[430px] mx-auto min-h-screen bg-white px-3 py-5">
 
-
-  <div class="add">
-
-    <input id="subjectName" placeholder="Subject">
-
-    <input id="attendanceValue" placeholder="attendance-count per present" type="text" inputmode="numeric" value="1"
-      min="1" step="1">
-
-    <button id="addSubjectBtn">
-      +
-    </button>
-
-  </div>
-  <button id="backupButton">login to BACKUP</button>
+    <!-- TITLE -->
+    <h1 class="text-center text-xl sm:text-2xl font-bold mb-6">
+      🧘𝗦𝗶𝗶𝗺𝗽𝗹𝗲 Attendance🧘
+    </h1>
 
 
+    <!-- ADD SUBJECT -->
+    <div class="add flex gap-2 mb-4">
 
-  <table>
+      <input id="subjectName" placeholder="Subject" class="min-w-0 flex-1 border border-gray-300 rounded-lg px-3 py-2
+               outline-none focus:ring-2 focus:ring-blue-400">
 
-    <thead>
+      <input id="attendanceValue" placeholder="attendance-count per present" type="text" inputmode="numeric" value="1"
+        min="1" step="1" class="w-[100px] border border-gray-300 rounded-lg px-2 py-2
+               outline-none focus:ring-2 focus:ring-blue-400">
 
-      <tr>
-
-        <th>Subject</th>
-
-
-
-        <th>TODAY's</th>
-        <th>ANYDAY</th>
-        <th>Hours</th>
-
-        <th>Present</th>
-
-        <th>Total</th>
-
-        <th>%</th>
-        <th>del</th>
-      </tr>
-
-    </thead>
-
-    <tbody id="subjectContainer">
-
-    </tbody>
-
-  </table>
-
-  <template id="subjectTemplate">
-
-    <tr>
-
-      <td class="subject-title"></td>
-
-
-
-      <td class="actions">
-        <div class="action-left">
-          <button class="present-btn">+</button>
-          <p class="today-count">0</p>
-          <button class="absent-btn">-</button>
-
-        </div>
-      </td>
-      <td><button class="calendar-btn">📅</button></td>
-      <td class="attendance-value"></td>
-
-      <td class="present-count"></td>
-
-      <td class="total-count"></td>
-
-      <td class="percentage"></td>
-      <td>
-        <button class="delete-btn">🗑</button>
-      </td>
-    </tr>
-
-  </template>
-
-  <div class="summary">
-
-    <span>Present periods :
-      <b id="overallPresent">0</b>
-    </span>
-
-    <span>Total periods:
-      <b id="overallTotal"> 0 </b>
-    </span>
-
-    <span>Attendance overall:
-      <b id="overallPercentage">0%</b>
-    </span>
-
-  </div>
-
-
-  <div id="calendarModal" class="modal">
-
-    <div class="modal-content">
-
-      <div><button class="close-btn" onclick="closeCalendar()">
-          ✕
-        </button>
-      </div>
-
-      <div class="calendar-header">
-
-        <!--date count popup-->
-        <div id="dayPopup" class="popup">
-          <button id="plusDay">+</button>
-
-          <span id="dayCount">0</span>
-
-          <button id="minusDay">-</button>
-
-        </div>
-        <!---->
-
-        <button onclick="prevMonth()">◀</button>
-
-        <h2 id="monthYear"></h2>
-
-        <button onclick="nextMonth()">▶</button>
-
-      </div>
-
-      <div id="calendar" class="calendar"></div>
+      <button id="addSubjectBtn" class="w-10 h-10 shrink-0 rounded-lg bg-blue-500 text-white
+               text-2xl font-bold flex items-center justify-center
+               hover:bg-blue-600 active:scale-95 transition">
+        +
+      </button>
 
     </div>
 
-  </div>
 
-  <!--for backup ->  access DB-->
+    <!-- BACKUP BUTTON -->
+    <button id="backupButton" class="w-full mb-5 py-2.5 rounded-lg
+             bg-gray-800 text-white font-semibold
+             hover:bg-gray-900 active:scale-[0.98] transition">
+      Login to BACKUP
+    </button>
+
+
+    <!-- TABLE -->
+    <div class="table-wrapper rounded-lg border border-gray-200">
+
+      <table class="w-full text-sm">
+
+        <thead>
+          <tr class="bg-gray-100 border-b border-gray-300">
+
+            <th class="px-2 py-3 text-left font-semibold">
+              Subject
+            </th>
+
+            <th class="px-2 py-3 font-semibold">
+              TODAY's
+            </th>
+
+            <th class="px-2 py-3 font-semibold">
+              ANYDAY
+            </th>
+
+            <th class="px-2 py-3 font-semibold">
+              Hours
+            </th>
+
+            <th class="px-2 py-3 font-semibold">
+              Present
+            </th>
+
+            <th class="px-2 py-3 font-semibold">
+              Total
+            </th>
+
+            <th class="px-2 py-3 font-semibold">
+              %
+            </th>
+
+            <th class="px-2 py-3 font-semibold">
+              del
+            </th>
+
+          </tr>
+        </thead>
+
+
+        <tbody id="subjectContainer" class="divide-y divide-gray-200">
+        </tbody>
+
+      </table>
+
+    </div>
+
+
+    <!-- SUBJECT TEMPLATE -->
+    <template id="subjectTemplate">
+
+      <tr class="hover:bg-gray-50">
+
+        <!-- SUBJECT -->
+        <td class="subject-title px-2 py-3 font-semibold max-w-[120px] break-words">
+        </td>
+
+
+        <!-- TODAY -->
+        <td class="actions px-2 py-3">
+
+          <div class="action-left flex items-center justify-center gap-1">
+
+            <button class="present-btn w-7 h-7 rounded-md bg-green-500
+                     text-white font-bold
+                     hover:bg-green-600 active:scale-90 transition">
+              +
+            </button>
+
+            <p class="today-count min-w-[20px] text-center font-semibold">
+              0
+            </p>
+
+            <button class="absent-btn w-7 h-7 rounded-md bg-red-500
+                     text-white font-bold
+                     hover:bg-red-600 active:scale-90 transition">
+              -
+            </button>
+
+          </div>
+
+        </td>
+
+
+        <!-- CALENDAR -->
+        <td class="px-2 py-3 text-center">
+
+          <button class="calendar-btn w-8 h-8 rounded-md bg-blue-100
+                   hover:bg-blue-200 active:scale-90 transition">
+            📅
+          </button>
+
+        </td>
+
+
+        <!-- ATTENDANCE VALUE -->
+        <td class="attendance-value px-2 py-3 text-center font-medium">
+        </td>
+
+
+        <!-- PRESENT -->
+        <td class="present-count px-2 py-3 text-center font-semibold">
+        </td>
+
+
+        <!-- TOTAL -->
+        <td class="total-count px-2 py-3 text-center font-semibold">
+        </td>
+
+
+        <!-- PERCENTAGE -->
+        <td class="percentage px-2 py-3 text-center font-bold">
+        </td>
+
+
+        <!-- DELETE -->
+        <td class="px-2 py-3 text-center">
+
+          <button class="delete-btn w-8 h-8 rounded-md
+                   bg-red-100 hover:bg-red-200
+                   active:scale-90 transition">
+            🗑
+          </button>
+
+        </td>
+
+      </tr>
+
+    </template>
+
+
+    <!-- SUMMARY -->
+    <div class="summary mt-5 p-4 rounded-xl bg-gray-100
+             border border-gray-200
+             flex flex-col gap-2 text-sm">
+
+      <span>
+        Present periods :
+        <b id="overallPresent" class="font-bold">
+          0
+        </b>
+      </span>
+
+      <span>
+        Total periods:
+        <b id="overallTotal" class="font-bold">
+          0
+        </b>
+      </span>
+
+      <span>
+        Attendance overall:
+        <b id="overallPercentage" class="font-bold">
+          0%
+        </b>
+      </span>
+
+    </div>
+
+
+    <!-- ================= CALENDAR MODAL ================= -->
+
+    <div id="calendarModal" class="modal hidden fixed inset-0 z-50
+             bg-black/50
+             flex items-center justify-center
+             p-4">
+
+      <div class="modal-content
+               w-full max-w-[400px]
+               max-h-[90vh]
+               overflow-y-auto
+               bg-white rounded-2xl
+               shadow-2xl
+               p-4">
+
+        <!-- CLOSE -->
+        <div class="flex justify-end">
+
+          <button class="close-btn w-9 h-9 rounded-full
+                   bg-gray-100 hover:bg-gray-200
+                   text-xl
+                   flex items-center justify-center" onclick="closeCalendar()">
+            ✕
+          </button>
+
+        </div>
+
+
+        <!-- CALENDAR HEADER -->
+        <div class="calendar-header
+                 relative
+                 flex items-center justify-between
+                 mt-2 mb-4">
+
+          <!-- DATE COUNT POPUP -->
+          <div id="dayPopup" class="popup
+                   hidden
+                   absolute
+                   left-1/2
+                   -translate-x-1/2
+                   -top-12
+                   bg-white
+                   border
+                   border-gray-300
+                   rounded-lg
+                   shadow-lg
+                   px-3 py-2
+                   items-center
+                   gap-3
+                   z-10">
+
+            <button id="plusDay" class="w-7 h-7 rounded-md
+                     bg-green-500 text-white font-bold">
+              +
+            </button>
+
+            <span id="dayCount" class="font-bold min-w-[20px] text-center">
+              0
+            </span>
+
+            <button id="minusDay" class="w-7 h-7 rounded-md
+                     bg-red-500 text-white font-bold">
+              -
+            </button>
+
+          </div>
+
+
+          <!-- PREVIOUS -->
+          <button onclick="prevMonth()" class="w-9 h-9 rounded-lg
+                   bg-gray-100 hover:bg-gray-200
+                   font-bold">
+            ◀
+          </button>
+
+
+          <!-- MONTH -->
+          <h2 id="monthYear" class="text-lg font-bold">
+          </h2>
+
+
+          <!-- NEXT -->
+          <button onclick="nextMonth()" class="w-9 h-9 rounded-lg
+                   bg-gray-100 hover:bg-gray-200
+                   font-bold">
+            ▶
+          </button>
+
+        </div>
+
+
+        <!-- CALENDAR -->
+        <div id="calendar" class="calendar">
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <!-- SUPABASE -->
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
-    const SUPABASE_URL = "https://dvuhlrjlicimddlastjf.supabase.co";
 
-    const SUPABASE_KEY = "sb_publishable_pK48pe9oQiCXEvTH6a-eOA_LhDU8Oh4";
+    const SUPABASE_URL =
+      "https://dvuhlrjlicimddlastjf.supabase.co";
 
-    const supabaseClient = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
+    const SUPABASE_KEY =
+      "sb_publishable_pK48pe9oQiCXEvTH6a-eOA_LhDU8Oh4";
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
   </script>
-  <!--  -->
+
+
+  <!-- YOUR EXISTING JAVASCRIPT -->
 
   <script src="/js/index.js"></script>
-
 
 </body>
 
