@@ -74,7 +74,7 @@
         await supabaseClient.auth.signInWithOAuth({
           provider: "google",
           options: {
-            redirectTo: "http://localhost:3000/backup_list.html",
+            redirectTo: window.location.origin + "/backup_list.html",
 
             queryParams: {
               prompt: "select_account"
