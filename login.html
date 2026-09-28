@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Login</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background: #f5f5f5;
+    }
+
+    .login-box {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      text-align: center;
+      width: 300px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="login-box">
+
+    <h2>Attendance App</h2>
+
+    <p>Sign in to continue</p>
+
+    <button id="googleLogin">
+      Continue with Google
+    </button>
+
+  </div>
+
+  <script>
+
+
+    const SUPABASE_URL = "https://dvuhlrjlicimddlastjf.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_pK48pe9oQiCXEvTH6a-eOA_LhDU8Oh4";
+
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+
+    document.getElementById("googleLogin").addEventListener("click", async function () {
+
+      console.log("Google button clicked");
+
+      const { data, error } =
+        await supabaseClient.auth.signInWithOAuth({
+          provider: "google",
+          options: {
+            redirectTo: "http://localhost:3000/backup_list.html",
+
+            queryParams: {
+              prompt: "select_account"
+            }
+          }
+        });
+
+      const {
+        data: { user },
+      } = await supabaseClient.auth.getUser();
+
+      console.log("User ID:", user.id);
+      console.log("Email:", user.email);
+
+    });
+
+
+  </script>
+
+</body>
+
+</html>

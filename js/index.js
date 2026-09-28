@@ -77,28 +77,19 @@ addSubjectBtn.addEventListener("click", function () {
 
   const value = Number(attendanceValueInput.value);
 
-  if (name === "") {
-
-    alert("Enter subject name");
-
+  if (!Number.isInteger(value) || value < 1) {
+    alert("Attendance value must be a positive integer");
     return;
-
   }
 
-  if (value <= 0) {
-
-    alert("Attendance value must be greater than zero");
-
+  if (name === "") {
+    alert("Enter subject name");
     return;
-
   }
 
   if (getSubject(name)) {
-
     alert("Subject already exists");
-
     return;
-
   }
 
   appData.subjects.push({
@@ -143,7 +134,7 @@ function calculate(subject) {
 
   let present = 0;
 
-  const value = subject.attendanceValue;
+  // const value = subject.attendanceValue;
 
   for (const date in subject.records) {
 
@@ -524,3 +515,13 @@ function stopResize() {
 renderSubjects();
 
 
+// ==============================
+// BACKUP IN ONLINE DB
+// ==============================
+
+const backupBtn = document.getElementById("backupButton");
+
+backupBtn.addEventListener("click", () => {
+  window.location.href = "/login.html";
+
+});

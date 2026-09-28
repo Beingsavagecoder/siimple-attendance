@@ -2,20 +2,12 @@
 <html lang="en">
 
 <head>
-
-  <link rel="manifest" href="manifest.json">
-
-  <meta name="theme-color" content="#2196f3">
-
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="/manifest.json">
   <title>Attendance Tracker</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon">
 
   <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles/style.css">
+  <link rel="stylesheet" href="/styles/style.css">
 
 </head>
 
@@ -28,34 +20,16 @@
 
     <input id="subjectName" placeholder="Subject">
 
-    <input id="attendanceValue" placeholder="attendance-count per present" type="number" value="1" min="0.25"
-      step="0.25">
+    <input id="attendanceValue" placeholder="attendance-count per present" type="text" inputmode="numeric" value="1"
+      min="1" step="1">
 
     <button id="addSubjectBtn">
-      <span style="
-    font-size: 30px;
-    font-weight: 1000;
-    padding-bottom: 2px;
-    color: #2d6cdf;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 25px;
-    height: 25px;
-
-    border-radius: 50%;
-    background: #eef4ff;
-    border: 1px solid #e7ea1d
-;
-    cursor: pointer;
-    transition: .2s;
-">
-        +
-      </span>
+      +
     </button>
 
   </div>
+  <button id="backupButton">Backup</button>
+
 
 
   <table>
@@ -172,17 +146,23 @@
 
   </div>
 
-
-
-  <script src="js/scripts.js"></script>
+  <!--for backup ->  access DB-->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("./sw.js")
-        .then(() => console.log("Service Worker Registered"))
-        .catch(err => console.log(err));
-    }
+    const SUPABASE_URL = "https://dvuhlrjlicimddlastjf.supabase.co";
+
+    const SUPABASE_KEY = "sb_publishable_pK48pe9oQiCXEvTH6a-eOA_LhDU8Oh4";
+
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
   </script>
+  <!--  -->
+
+  <script src="/js/index.js"></script>
+
 
 </body>
 
