@@ -1,0 +1,814 @@
+/* =========================================================
+   ATTENDANCE APP — SHARED DESIGN
+   ========================================================= */
+
+:root {
+  --bg: #f5f7fb;
+  --surface: #ffffff;
+  --surface-soft: #f8fafc;
+  --text: #172033;
+  --muted: #667085;
+  --border: #e4e7ec;
+
+  --primary: #4f46e5;
+  --primary-dark: #4338ca;
+  --primary-soft: #eef2ff;
+
+  --success: #16a34a;
+  --success-soft: #ecfdf3;
+
+  --danger: #dc2626;
+  --danger-soft: #fef2f2;
+
+  --shadow:
+    0 10px 30px rgba(16, 24, 40, 0.08);
+
+  --radius: 16px;
+}
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  background: var(--bg);
+  color: var(--text);
+
+  line-height: 1.5;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   MAIN PAGE CONTAINER
+   ========================================================= */
+
+main,
+.page-container,
+.container {
+  width: min(1100px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+
+/* =========================================================
+   HEADINGS
+   ========================================================= */
+
+h1,
+h2,
+h3 {
+  color: var(--text);
+}
+
+h1 {
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  margin-bottom: 8px;
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+h3 {
+  font-size: 1.1rem;
+}
+
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+
+input {
+  width: 100%;
+
+  border: 1px solid var(--border);
+  border-radius: 10px;
+
+  padding: 11px 13px;
+
+  background: var(--surface);
+  color: var(--text);
+
+  outline: none;
+
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+input:focus {
+  border-color: var(--primary);
+
+  box-shadow:
+    0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+
+input::placeholder {
+  color: #98a2b3;
+}
+
+
+/* =========================================================
+   GENERAL BUTTON
+   ========================================================= */
+
+button {
+  border: 0;
+  border-radius: 10px;
+
+  padding: 10px 16px;
+
+  font-weight: 600;
+
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s,
+    background 0.15s;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+
+/* =========================================================
+   PRIMARY BUTTON
+   ========================================================= */
+
+#backupButton,
+#backupNowBtn,
+#addSubjectBtn,
+.primary-btn {
+  background: var(--primary);
+  color: white;
+
+  box-shadow:
+    0 4px 12px rgba(79, 70, 229, 0.22);
+}
+
+#backupButton:hover,
+#backupNowBtn:hover,
+#addSubjectBtn:hover,
+.primary-btn:hover {
+  background: var(--primary-dark);
+}
+
+
+/* =========================================================
+   LOGIN PAGE
+   ========================================================= */
+
+.login-container,
+.auth-container {
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+}
+
+.login-card,
+.auth-card {
+  width: min(420px, 100%);
+
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+  border-radius: 22px;
+
+  padding: 36px;
+
+  box-shadow: var(--shadow);
+
+  text-align: center;
+}
+
+.login-card h1,
+.auth-card h1 {
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+.login-card p,
+.auth-card p {
+  color: var(--muted);
+  margin-bottom: 28px;
+}
+
+
+/* Google login button */
+
+#googleLoginBtn,
+.google-btn {
+  width: 100%;
+
+  background: white;
+  color: var(--text);
+
+  border: 1px solid var(--border);
+
+  padding: 12px 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  box-shadow: 0 2px 6px rgba(16, 24, 40, 0.05);
+}
+
+#googleLoginBtn:hover,
+.google-btn:hover {
+  background: var(--surface-soft);
+}
+
+
+/* =========================================================
+   ATTENDANCE APP HEADER
+   ========================================================= */
+
+.app-header {
+  width: min(1100px, calc(100% - 32px));
+
+  margin: 0 auto;
+  padding: 24px 0 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+}
+
+.app-header h1 {
+  margin: 0;
+}
+
+
+/* =========================================================
+   OVERALL ATTENDANCE
+   ========================================================= */
+
+.overall-card {
+  width: min(1100px, calc(100% - 32px));
+
+  margin: 0 auto 24px;
+
+  padding: 22px;
+
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+
+  box-shadow: var(--shadow);
+}
+
+.overall-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.overall-stat {
+  flex: 1;
+  min-width: 140px;
+
+  padding: 14px 16px;
+
+  border-radius: 12px;
+
+  background: var(--surface-soft);
+
+  border: 1px solid var(--border);
+}
+
+.overall-stat span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.overall-stat strong {
+  display: block;
+
+  margin-top: 3px;
+
+  font-size: 1.35rem;
+}
+
+
+/* =========================================================
+   ADD SUBJECT
+   ========================================================= */
+
+.add-subject-card {
+  width: min(1100px, calc(100% - 32px));
+
+  margin: 0 auto 24px;
+
+  padding: 20px;
+
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+
+  box-shadow: var(--shadow);
+}
+
+.add-subject-form {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr) 180px auto;
+
+  gap: 10px;
+}
+
+
+/* =========================================================
+   SUBJECT CARDS
+   ========================================================= */
+
+#subjectContainer {
+  width: min(1100px, calc(100% - 32px));
+
+  margin: 0 auto;
+
+  display: grid;
+  gap: 16px;
+
+  padding-bottom: 40px;
+}
+
+.subject-card {
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+
+  padding: 20px;
+
+  box-shadow: var(--shadow);
+
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+.subject-card:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 14px 36px rgba(16, 24, 40, 0.10);
+}
+
+.subject-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+
+  margin: 0;
+}
+
+.attendance-value {
+  color: var(--muted);
+}
+
+.subject-stats {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 10px;
+
+  margin: 14px 0;
+}
+
+.subject-stats>* {
+  padding: 7px 11px;
+
+  border-radius: 8px;
+
+  background: var(--surface-soft);
+
+  border: 1px solid var(--border);
+}
+
+
+/* =========================================================
+   PRESENT / ABSENT BUTTONS
+   ========================================================= */
+
+.present-btn {
+  background: var(--success-soft);
+  color: var(--success);
+
+  border: 1px solid #bbf7d0;
+}
+
+.present-btn:hover {
+  background: #dcfce7;
+}
+
+.absent-btn {
+  background: var(--danger-soft);
+  color: var(--danger);
+
+  border: 1px solid #fecaca;
+}
+
+.absent-btn:hover {
+  background: #fee2e2;
+}
+
+.delete-btn {
+  background: #f3f4f6;
+  color: #475467;
+}
+
+.delete-btn:hover {
+  background: #e5e7eb;
+}
+
+.calendar-btn {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.calendar-btn:hover {
+  background: #e0e7ff;
+}
+
+
+/* =========================================================
+   CALENDAR MODAL
+   ========================================================= */
+
+#calendarModal {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 1000;
+
+  background: rgba(15, 23, 42, 0.45);
+
+  display: none;
+
+  padding: 20px;
+}
+
+.calendar-modal-content {
+  width: min(520px, 100%);
+
+  margin: 5vh auto;
+
+  background: var(--surface);
+
+  border-radius: 20px;
+
+  padding: 22px;
+
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.20);
+}
+
+.calendar-header {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 18px;
+}
+
+.calendar-header button {
+  width: 38px;
+  height: 38px;
+
+  padding: 0;
+
+  background: var(--surface-soft);
+
+  border: 1px solid var(--border);
+}
+
+#calendar {
+  display: grid;
+
+  grid-template-columns:
+    repeat(7, 1fr);
+
+  gap: 6px;
+}
+
+.day {
+  min-height: 42px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 9px;
+
+  background: var(--surface-soft);
+
+  border: 1px solid transparent;
+
+  cursor: pointer;
+
+  transition: 0.15s;
+}
+
+.day:hover {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+}
+
+.day.present {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.day.absent {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.day.today {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+
+/* =========================================================
+   DAY POPUP
+   ========================================================= */
+
+#dayPopup {
+  z-index: 1100;
+
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+
+  border-radius: 12px;
+
+  padding: 12px;
+
+  box-shadow:
+    0 12px 30px rgba(16, 24, 40, 0.15);
+}
+
+#dayCount {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   BACKUP PAGE
+   ========================================================= */
+
+.backup-page {
+  min-height: 100vh;
+
+  padding: 40px 16px;
+}
+
+.backup-container {
+  width: min(900px, 100%);
+
+  margin: 0 auto;
+}
+
+.backup-header {
+  margin-bottom: 24px;
+}
+
+.backup-header h1,
+.backup-header h2 {
+  margin-bottom: 5px;
+}
+
+.backup-header p {
+  color: var(--muted);
+}
+
+
+/* Backup action */
+
+.backup-action {
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+
+  padding: 24px;
+
+  margin-bottom: 22px;
+
+  box-shadow: var(--shadow);
+}
+
+#backupNowBtn {
+  min-width: 150px;
+}
+
+
+/* Status */
+
+#backupStatus,
+#status {
+  margin-top: 12px;
+
+  color: var(--muted);
+
+  font-size: 0.92rem;
+}
+
+
+/* =========================================================
+   BACKUP TABLE
+   ========================================================= */
+
+.backup-table-container {
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+
+  overflow-x: auto;
+
+  box-shadow: var(--shadow);
+}
+
+table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  background: var(--surface);
+}
+
+thead {
+  background: var(--surface-soft);
+}
+
+th,
+td {
+  padding: 14px 16px;
+
+  text-align: left;
+
+  border-bottom: 1px solid var(--border);
+
+  white-space: nowrap;
+}
+
+th {
+  color: #475467;
+
+  font-size: 0.85rem;
+
+  font-weight: 700;
+}
+
+td {
+  color: var(--text);
+}
+
+tbody tr:hover {
+  background: #fafafa;
+}
+
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+
+/* Restore button */
+
+td button {
+  background: var(--primary-soft);
+  color: var(--primary);
+
+  padding: 7px 12px;
+}
+
+td button:hover {
+  background: #e0e7ff;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.empty-state {
+  padding: 40px 20px;
+
+  text-align: center;
+
+  color: var(--muted);
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  .app-header {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .add-subject-form {
+    grid-template-columns: 1fr;
+  }
+
+  .overall-stats {
+    display: grid;
+
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+  .subject-card {
+    padding: 16px;
+  }
+
+  .backup-page {
+    padding: 24px 12px;
+  }
+
+  .backup-action {
+    padding: 18px;
+  }
+
+  th,
+  td {
+    padding: 11px 12px;
+  }
+
+  .login-card,
+  .auth-card {
+    padding: 26px 20px;
+  }
+}
+
+
+@media (max-width: 420px) {
+
+  .overall-stats {
+    grid-template-columns: 1fr;
+  }
+
+  button {
+    padding: 9px 13px;
+  }
+
+  #calendar {
+    gap: 4px;
+  }
+}

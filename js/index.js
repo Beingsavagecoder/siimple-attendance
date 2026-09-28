@@ -518,10 +518,43 @@ renderSubjects();
 // ==============================
 // BACKUP IN ONLINE DB
 // ==============================
-
+// backup button 
 const backupBtn = document.getElementById("backupButton");
 
 backupBtn.addEventListener("click", () => {
   window.location.href = "/login.html";
 
 });
+
+// backup to cloud fn >backend
+async function backupToCloud() {
+  const { data: { user }, error: userError } =
+    await supabase.auth.getUser();
+
+  if (userError || !user) {
+    console.error("User is not logged in");
+    return;
+  }
+
+  const today = new Date().toISOString().split("T")[0];
+
+  const { data, error } = await supabase
+    .from("attendance_backups")
+    .upsert(
+      {
+        user_id: user.id,
+        backup_date: today,
+        backup_data: appData
+      },
+      {
+        onConflict: "user_id,backup_date"
+      }
+    );
+
+  if (error) {
+    console.error("Cloud backup failed:", error);
+    return;
+  }
+
+  console.log("Cloud backup successful");
+}

@@ -287,6 +287,16 @@ button {
   font-weight: bold;
 }
 
+#backupButton {
+  width: 34px;
+  height: 34px;
+  background: #03817c;
+  color: white;
+  border-radius: 8px;
+  font-size: 6px;
+  font-weight: bold;
+}
+
 /* Calendar */
 
 .calendar-btn {
