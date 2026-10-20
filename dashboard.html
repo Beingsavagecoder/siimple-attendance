@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body class="min-h-screen bg-gray-100 px-4 py-10">
+  <main class="mx-auto max-w-2xl">
+    <header class="mb-8">
+      <p class="text-sm font-medium text-indigo-600">STUDENT SPACE</p>
+      <h1 class="mt-2 text-3xl font-bold text-gray-900">
+        Your Dashboard
+      </h1>
+      <p id="welcomeMessage" class="mt-2 text-gray-600">
+        Checking your login session...
+      </p>
+
+    </header>
+
+    <section class="grid gap-5 sm:grid-cols-2">
+      <article class="rounded-2xl bg-white p-6 shadow-sm">
+        <div class="mb-4 text-3xl">📚</div>
+        <h2 class="text-xl font-semibold">Attendance Backup</h2>
+        <p class="mt-2 text-sm text-gray-600">
+          Save and restore your attendance data.
+        </p>
+        <button id="backupButton"
+          class="mt-6 w-full rounded-lg bg-gray-900 px-4 py-3 font-semibold text-white hover:bg-gray-700">
+          Open Backup
+        </button>
+      </article>
+
+      <article class="rounded-2xl bg-white p-6 shadow-sm">
+        <div class="mb-4 text-3xl">🗺️</div>
+        <h2 class="text-xl font-semibold">University Map & Chat</h2>
+        <p class="mt-2 text-sm text-gray-600">
+          Discover registered students and chat with them.
+        </p>
+        <button id="mapButton"
+          class="mt-6 w-full rounded-lg bg-indigo-600 px-4 py-3 font-semibold text-white hover:bg-indigo-700">
+          Open Map & Chat
+        </button>
+      </article>
+    </section>
+
+    <p id="statusMessage" class="mt-6 text-sm text-gray-600" role="status"></p>
+
+    <button id="logoutButton"
+      class="mt-6 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm hover:bg-gray-50">
+      Sign out
+    </button>
+    <button id="mapRegisterBtn" type="button" class="w-full mb-5 py-2.5 rounded-lg
+             bg-gray-800 text-white font-semibold
+             hover:bg-gray-900 active:scale-[0.98] transition">
+      || Register for chatting map ||
+    </button>
+  </main>
+  <script>
+
+    const mapRegisterBtn = document.getElementById("mapRegisterBtn");
+
+    if (mapRegisterBtn) {
+      mapRegisterBtn.addEventListener("click", () => {
+        window.location.href = "mapregister.html";
+      });
+    }
+  </script>
+
+  <script src="js/dashboard.js"></script>
+</body>
+
+</html>

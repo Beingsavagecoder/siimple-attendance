@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Registration</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="min-h-screen bg-gray-100 px-4 py-8">
+
+  <main class="mx-auto max-w-lg rounded-2xl bg-white p-6 shadow-lg">
+    <a href="/index.html" class="text-sm text-gray-500 hover:text-gray-900">
+      ← Back to Attendance
+    </a>
+
+    <h1 class="mt-5 text-2xl font-bold text-gray-900">
+      Student Registration
+    </h1>
+
+    <p class="mt-2 mb-6 text-sm text-gray-500">
+      Register to discover students from universities across India.
+    </p>
+
+    <form id="studentRegistrationForm" class="space-y-5">
+
+      <div>
+        <label for="nickname" class="mb-1 block text-sm font-medium">
+          Nickname
+        </label>
+        <input id="nickname" name="nickname" type="text" maxlength="30" required placeholder="Enter your nickname"
+          class="w-full rounded-lg border border-gray-300 p-3">
+      </div>
+
+      <div>
+        <label for="universitySearch" class="mb-1 block text-sm font-medium">
+          University
+        </label>
+
+        <input id="universitySearch" name="university" list="universityOptions" required maxlength="150"
+          placeholder="Search your university" autocomplete="off" class="w-full rounded-lg border border-gray-300 p-3">
+
+        <datalist id="universityOptions">
+          <option value="Indian Institute of Technology Delhi">
+          <option value="Indian Institute of Technology Bombay">
+          <option value="Indian Institute of Technology Kanpur">
+          <option value="Indian Institute of Technology Roorkee">
+          <option value="Indian Institute of Technology Madras">
+          <option value="National Institute of Technology Kurukshetra">
+          <option value="National Institute of Technology Trichy">
+          <option value="Delhi Technological University">
+          <option value="University of Delhi">
+          <option value="Jawaharlal Nehru University">
+          <option value="Panjab University">
+          <option value="Anna University">
+          <option value="VIT Vellore">
+          <option value="Lovely Professional University">
+          <option value="Other university">
+        </datalist>
+
+        <p class="mt-1 text-xs text-gray-500">
+          Start typing to search. You can enter another university too.
+        </p>
+      </div>
+
+      <div>
+        <label for="educationLevel" class="mb-1 block text-sm font-medium">
+          Education level
+        </label>
+        <select id="educationLevel" name="educationLevel" required class="w-full rounded-lg border border-gray-300 p-3">
+          <option value="">Select education level</option>
+          <option value="After 12th">After 12th</option>
+          <option value="Diploma">Diploma</option>
+          <option value="UG">Undergraduate (UG)</option>
+          <option value="PG">Postgraduate (PG)</option>
+          <option value="PhD">PhD / Doctoral</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="course" class="mb-1 block text-sm font-medium">
+          Course / Programme
+        </label>
+        <select id="course" name="course" required disabled class="w-full rounded-lg border border-gray-300 p-3">
+          <option value="">Select education level first</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="branch" class="mb-1 block text-sm font-medium">
+          Branch / Field of study
+        </label>
+        <select id="branch" name="branch" required disabled class="w-full rounded-lg border border-gray-300 p-3">
+          <option value="">Select course first</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="studyYear" class="mb-1 block text-sm font-medium">
+          Year of study
+        </label>
+        <select id="studyYear" name="studyYear" required class="w-full rounded-lg border border-gray-300 p-3">
+          <option value="">Select year</option>
+          <option value="1">Year 1</option>
+          <option value="2">Year 2</option>
+          <option value="3">Year 3</option>
+          <option value="4">Year 4</option>
+          <option value="5">Year 5</option>
+          <option value="6">Year 6</option>
+        </select>
+      </div>
+
+      <p id="registrationMessage" class="hidden text-sm text-red-600" role="alert"></p>
+
+      <button type="submit" class="w-full rounded-lg bg-gray-900 px-4 py-3
+        font-semibold text-white transition hover:bg-gray-700">
+        Register
+      </button>
+    </form>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/mapregister.js"></script>
+</body>
+
+</html>

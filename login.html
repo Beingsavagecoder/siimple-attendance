@@ -55,44 +55,78 @@
   </div>
 
   <script>
+    const SUPABASE_URL =
+      "https://dvuhlrjlicimddlastjf.supabase.co";
 
-
-    const SUPABASE_URL = "https://dvuhlrjlicimddlastjf.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_pK48pe9oQiCXEvTH6a-eOA_LhDU8Oh4";
+    const SUPABASE_KEY =
+      "sb_publishable_pK48pe9oQiCXEvTH6a-eOA_LhDU8Oh4";
 
     const supabaseClient = window.supabase.createClient(
       SUPABASE_URL,
       SUPABASE_KEY
     );
 
+    function getSafeDestination() {
+      const requested = new URLSearchParams(
+        window.location.search
+      ).get("next");
 
-    document.getElementById("googleLogin").addEventListener("click", async function () {
+      const allowedPages = [
+        "dashboard.html",
+        "backup_list.html",
+        "mapregister.html",
+        "chat.html"
+      ];
 
-      console.log("Google button clicked");
+      if (allowedPages.includes(requested)) {
+        return requested;
+      }
 
-      const { data, error } =
-        await supabaseClient.auth.signInWithOAuth({
-          provider: "google",
-          options: {
-            redirectTo: window.location.origin + "/backup_list.html",
+      const host = window.location.hostname;
 
-            queryParams: {
-              prompt: "select_account"
-            }
-          }
-        });
+      if (host === "localhost" || host === "127.0.0.1") {
+        return "dashboard.html";
+      }
 
-      const {
-        data: { user },
-      } = await supabaseClient.auth.getUser();
+      return "backup_list.html";
+    }
 
-      console.log("User ID:", user.id);
-      console.log("Email:", user.email);
+    document
+      .getElementById("googleLogin")
+      .addEventListener("click", async function () {
+        const button = this;
+        button.disabled = true;
 
-    });
+        try {
+          const destination = getSafeDestination();
 
+          const redirectUrl = new URL(
+            destination,
+            window.location.href
+          ).href;
 
+          console.log("OAuth redirect:", redirectUrl);
+
+          const { error } =
+            await supabaseClient.auth.signInWithOAuth({
+              provider: "google",
+              options: {
+                redirectTo: redirectUrl,
+                queryParams: {
+                  prompt: "select_account"
+                }
+              }
+            });
+
+          if (error) throw error;
+        } catch (error) {
+          console.error("Google login error:", error);
+          alert("Login failed: " + error.message);
+          button.disabled = false;
+        }
+      });
   </script>
+
 
 </body>
 

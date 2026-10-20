@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ChatMap — Find Students</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      font: 15px system-ui, -apple-system, Segoe UI, sans-serif;
+      background: #f3f5fa;
+      color: #172033
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 18px;
+      background: #172554;
+      color: white
+    }
+
+    a.btn,
+    button.btn {
+      display: inline-block;
+      border: 0;
+      border-radius: 9px;
+      padding: 9px 12px;
+      background: #315be8;
+      color: white;
+      text-decoration: none;
+      font-weight: 650;
+      cursor: pointer
+    }
+
+    a.secondary,
+    button.secondary {
+      background: #e8edf8;
+      color: #172033
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(280px, 360px) 1fr;
+      gap: 12px;
+      padding: 12px;
+      height: calc(100dvh - 54px)
+    }
+
+    .panel {
+      background: white;
+      border: 1px solid #e0e4ed;
+      border-radius: 13px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 0
+    }
+
+    .panelhead {
+      padding: 13px;
+      border-bottom: 1px solid #e0e4ed
+    }
+
+    .panelhead h2 {
+      margin: 0 0 8px;
+      font-size: 1.05rem
+    }
+
+    #search {
+      width: 100%;
+      border: 1px solid #d2d8e5;
+      border-radius: 9px;
+      padding: 10px
+    }
+
+    #studentList {
+      overflow: auto
+    }
+
+    .student {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding: 12px;
+      border-bottom: 1px solid #eff1f5
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #dbeafe;
+      color: #1d4ed8;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      flex-shrink: 0
+    }
+
+    .info {
+      min-width: 0;
+      flex: 1
+    }
+
+    .name {
+      font-weight: 700
+    }
+
+    .sub {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 2px
+    }
+
+    .empty {
+      padding: 20px;
+      color: #6b7280;
+      text-align: center
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+      min-height: 350px
+    }
+
+    .map-note {
+      padding: 9px 12px;
+      color: #6b7280;
+      font-size: 12px;
+      border-top: 1px solid #e0e4ed
+    }
+
+    @media(max-width:760px) {
+      header {
+        padding: 10px
+      }
+
+      main {
+        height: auto;
+        min-height: calc(100dvh - 54px);
+        display: flex;
+        flex-direction: column;
+        padding: 8px
+      }
+
+      .panel {
+        min-height: 280px
+      }
+
+      #map {
+        min-height: 42dvh
+      }
+
+      .map-panel {
+        order: -1
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header><strong>🗺️ ChatMap · Find students</strong>
+    <div><a class="btn secondary" href="chat.html">Chats</a> <a class="btn secondary"
+        href="dashboard.html">Dashboard</a></div>
+  </header>
+  <main>
+    <section class="panel">
+      <div class="panelhead">
+        <h2>Students at your university network</h2><input id="search" placeholder="Search nickname, course, branch…">
+      </div>
+      <div id="studentList">
+        <div class="empty">Loading student profiles…</div>
+      </div>
+    </section>
+    <section class="panel map-panel">
+      <div id="map"></div>
+      <div class="map-note">Map pins show university locations, not students’ live or exact personal locations.
+        Universities without saved coordinates remain available in the student list.</div>
+    </section>
+  </main>
+  <script>
+    (() => {
+      "use strict";
+      const SUPABASE_URL = "https://dvuhlrjlicimddlastjf.supabase.co";
+      const SUPABASE_KEY = "sb_publishable_pK48pe9oQiCXEvTH6a-eOA_LhDU8Oh4";
+      const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      const $ = id => document.getElementById(id);
+      let currentUser = null, students = [];
+      const map = L.map("map").setView([22.5, 79], 4);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 18, attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
+      const markers = L.layerGroup().addTo(map);
+      const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+      const initials = n => (n || "?").trim().split(/\s+/).slice(0, 2).map(x => x[0] || "").join("").toUpperCase();
+      const summary = p => [p.course, p.branch, p.study_year ? `Year ${p.study_year}` : ""].filter(Boolean).join(" · ") || "Student";
+      function renderList() {
+        const q = $("search").value.toLowerCase().trim();
+        const visible = students.filter(p => `${p.nickname} ${p.course || ""} ${p.branch || ""} ${p.education_level || ""} ${p.university?.name || ""} ${p.university?.city || ""}`.toLowerCase().includes(q));
+        $("studentList").innerHTML = visible.length ? "" : '<div class="empty">No students match your search.</div>';
+        visible.forEach(p => {
+          const div = document.createElement("div"); div.className = "student";
+          const uni = p.university?.name || "University not set";
+          div.innerHTML = `<div class="avatar">${esc(initials(p.nickname))}</div><div class="info"><div class="name">${esc(p.nickname)}</div><div class="sub">${esc(summary(p))}</div><div class="sub">${esc(uni)}${p.university?.city ? " · " + esc(p.university.city) : ""}</div></div><a class="btn" href="chat.html?user=${encodeURIComponent(p.user_id)}">Message</a>`;
+          $("studentList").appendChild(div);
+        });
+      }
+      function renderMap() {
+        markers.clearLayers();
+        const byUniversity = new Map();
+        students.forEach(p => {
+          const u = p.university;
+          if (!u || !Number.isFinite(Number(u.latitude)) || !Number.isFinite(Number(u.longitude))) return;
+          const lat = Number(u.latitude), lng = Number(u.longitude);
+          if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return;
+          const key = `${lat},${lng}`;
+          if (!byUniversity.has(key)) byUniversity.set(key, { u, people: [] });
+          byUniversity.get(key).people.push(p);
+        });
+        const bounds = [];
+        byUniversity.forEach(({ u, people }) => {
+          const names = people.map(p => `<div style="margin-top:8px"><strong>${esc(p.nickname)}</strong><br><small>${esc(summary(p))}</small><br><a href="chat.html?user=${encodeURIComponent(p.user_id)}">Message student</a></div>`).join("");
+          const marker = L.marker([Number(u.latitude), Number(u.longitude)]).bindPopup(`<strong>${esc(u.name)}</strong><br>${esc(u.city || "")}<br>${people.length} listed student(s)${names}`);
+          marker.addTo(markers); bounds.push([Number(u.latitude), Number(u.longitude)]);
+        });
+        if (bounds.length === 1) map.setView(bounds[0], 12);
+        else if (bounds.length > 1) map.fitBounds(bounds, { padding: [25, 25], maxZoom: 12 });
+      }
+      async function init() {
+        const { data, error } = await db.auth.getUser();
+        if (error || !data.user) { location.href = "login.html?next=map.html"; return }
+        currentUser = data.user;
+        const { data: rows, error: profilesError } = await db.from("student_profiles")
+          .select("user_id,nickname,education_level,course,branch,study_year,university:universities(id,name,city,country,latitude,longitude)")
+          .neq("user_id", currentUser.id).order("nickname");
+        if (profilesError) throw profilesError;
+        students = rows || []; renderList(); renderMap();
+        if (!students.length) $("studentList").innerHTML = '<div class="empty">No other student profiles are registered yet.</div>';
+      }
+      $("search").addEventListener("input", renderList);
+      init().catch(e => { console.error(e); $("studentList").innerHTML = `<div class="empty" style="color:#c62828">Could not load students: ${esc(e.message)}<br><br>Check student_profiles and universities SELECT permissions/RLS.</div>` });
+    })();
+  </script>
+</body>
+
+</html>

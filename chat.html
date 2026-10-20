@@ -1,0 +1,787 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ChatMap Chat</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      font: 15px system-ui;
+      background: #f3f5fa;
+      color: #182033
+    }
+
+    .top {
+      background: #172554;
+      color: white;
+      padding: 14px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 9px;
+      padding: 10px 13px;
+      background: #315be8;
+      color: white;
+      font-weight: 650;
+      cursor: pointer
+    }
+
+    .btn:disabled {
+      opacity: .45;
+      cursor: not-allowed
+    }
+
+    .secondary {
+      background: #e8edf8;
+      color: #182033
+    }
+
+    .danger {
+      background: #c62828
+    }
+
+    .layout {
+      height: calc(100dvh - 54px);
+      padding: 12px;
+      display: grid;
+      grid-template-columns: 300px minmax(0, 1fr);
+      gap: 12px
+    }
+
+    .panel {
+      background: white;
+      border: 1px solid #e0e4ed;
+      border-radius: 13px;
+      min-height: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column
+    }
+
+    .head {
+      padding: 13px;
+      border-bottom: 1px solid #e0e4ed
+    }
+
+    .head h3 {
+      margin: 0 0 9px
+    }
+
+    .search {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #d2d8e5;
+      border-radius: 9px
+    }
+
+    .list {
+      overflow: auto
+    }
+
+    .person {
+      width: 100%;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding: 12px;
+      border: 0;
+      border-bottom: 1px solid #eff1f5;
+      background: white;
+      text-align: left;
+      cursor: pointer
+    }
+
+    .person:hover {
+      background: #f0f4ff
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #dbeafe;
+      color: #1d4ed8;
+      font-weight: 800;
+      flex-shrink: 0
+    }
+
+    .name {
+      font-weight: 700
+    }
+
+    .sub {
+      font-size: 12px;
+      color: #6b7280
+    }
+
+    .chathead {
+      padding: 12px 14px;
+      border-bottom: 1px solid #e0e4ed;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap
+    }
+
+    .messages {
+      flex: 1;
+      overflow: auto;
+      padding: 14px;
+      background: #fafbff;
+      display: flex;
+      flex-direction: column;
+      gap: 9px
+    }
+
+    .empty {
+      margin: auto;
+      padding: 20px;
+      text-align: center;
+      color: #6b7280
+    }
+
+    .rowmsg {
+      display: flex
+    }
+
+    .rowmsg.mine {
+      justify-content: flex-end
+    }
+
+    .bubble {
+      max-width: 78%;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      background: white;
+      border: 1px solid #e0e4ed;
+      border-radius: 13px;
+      padding: 10px
+    }
+
+    .mine .bubble {
+      background: #e5edff;
+      border-color: #d3dfff
+    }
+
+    .time {
+      font-size: 10px;
+      color: #6b7280;
+      text-align: right;
+      margin-top: 5px
+    }
+
+    .composer {
+      display: flex;
+      gap: 8px;
+      padding: 10px;
+      border-top: 1px solid #e0e4ed
+    }
+
+    .composer textarea {
+      resize: none;
+      flex: 1;
+      min-width: 0;
+      border: 1px solid #d2d8e5;
+      border-radius: 10px;
+      padding: 10px
+    }
+
+    .status {
+      padding: 8px 12px;
+      color: #6b7280;
+      border-top: 1px solid #e0e4ed;
+      font-size: 12px
+    }
+
+    .error {
+      color: #c62828
+    }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      background: #101727f5;
+      color: white;
+      padding: 16px;
+      flex-direction: column
+    }
+
+    .overlay.open {
+      display: flex
+    }
+
+    .videos {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      flex: 1;
+      min-height: 0;
+      align-content: center
+    }
+
+    .videos video {
+      width: 100%;
+      max-height: 70dvh;
+      background: #263247;
+      border-radius: 12px;
+      min-height: 150px;
+      object-fit: cover
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 9px;
+      padding: 12px;
+      flex-wrap: wrap
+    }
+
+    .incoming {
+      display: none;
+      position: fixed;
+      z-index: 15;
+      right: 15px;
+      bottom: 15px;
+      background: white;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px #0003
+    }
+
+    .incoming.open {
+      display: block
+    }
+
+    @media(max-width:800px) {
+      .layout {
+        display: block;
+        padding: 8px
+      }
+
+      .panel {
+        height: 100%
+      }
+
+      #sidebar,
+      #chat {
+        display: none
+      }
+
+      #sidebar.show,
+      #chat.show {
+        display: flex
+      }
+
+      .videos {
+        grid-template-columns: 1fr
+      }
+
+      .videos video {
+        max-height: 38dvh
+      }
+
+      .top {
+        padding: 10px
+      }
+
+      .top .btn {
+        padding: 7px;
+        font-size: 12px
+      }
+    }
+
+    .panel {
+      height: 100%
+    }
+
+    #chat {
+      display: flex
+    }
+
+    #people,
+    #convos {
+      display: none
+    }
+
+    .videos {
+      grid-template-columns: 1fr
+    }
+
+    .videos video {
+      max-height: 38dvh
+    }
+
+    .top {
+      padding: 10px
+    }
+
+    /* WhatsApp-inspired ChatMap theme */
+    :root {
+      --wa-green: #075e54;
+      --wa-green-dark: #064c44;
+      --wa-accent: #25d366;
+      --wa-line: #e6e9e7;
+      --wa-muted: #667781;
+      --wa-chat: #efeae2
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #dfe5e7;
+      color: #111b21
+    }
+
+    .top {
+      height: 64px;
+      background: var(--wa-green);
+      padding: 10px 20px;
+      box-shadow: 0 2px 5px #00000012
+    }
+
+    .top strong {
+      font-size: 20px;
+      letter-spacing: .1px
+    }
+
+    .btn {
+      background: var(--wa-green);
+      border-radius: 6px;
+      padding: 9px 13px;
+      font-weight: 600;
+      transition: background .15s ease
+    }
+
+    .btn:hover:not(:disabled) {
+      background: var(--wa-green-dark)
+    }
+
+    .top .secondary,
+    .secondary {
+      background: #f0f2f5;
+      color: #253238;
+      border: 1px solid #d9dfe2
+    }
+
+    .top .secondary:hover:not(:disabled),
+    .secondary:hover:not(:disabled) {
+      background: #e2e7e9
+    }
+
+    .danger {
+      background: #c62828 !important;
+      color: #fff !important
+    }
+
+    .layout {
+      height: calc(100dvh - 64px);
+      padding: 0;
+      grid-template-columns: minmax(270px, 350px) minmax(0, 1fr);
+      gap: 0;
+      max-width: 1600px;
+      margin: 0 auto;
+      background: #fff
+    }
+
+    .panel {
+      height: 100%;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none
+    }
+
+    #sidebar {
+      border-right: 1px solid #d9dfe2
+    }
+
+    .head {
+      padding: 15px 16px 13px;
+      border-bottom: 1px solid var(--wa-line);
+      background: #fff
+    }
+
+    .head h3 {
+      font-size: 18px
+    }
+
+    .search {
+      background: #f0f2f5;
+      border: 1px solid #f0f2f5;
+      border-radius: 8px;
+      padding: 11px 13px;
+      outline: none
+    }
+
+    .search:focus {
+      border-color: #9bc9bf;
+      background: #fff
+    }
+
+    .person {
+      padding: 13px 15px;
+      gap: 12px;
+      border-bottom: 1px solid #f0f2f5;
+      min-height: 72px
+    }
+
+    .person:hover {
+      background: #f5f6f6
+    }
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      background: #d9fdd3;
+      color: #075e54;
+      font-size: 15px;
+      font-weight: 700
+    }
+
+    .name {
+      font-size: 15px;
+      font-weight: 600;
+      color: #111b21
+    }
+
+    .sub {
+      font-size: 12px;
+      color: var(--wa-muted);
+      margin-top: 3px
+    }
+
+    .chathead {
+      min-height: 68px;
+      padding: 10px 18px;
+      background: #f0f2f5;
+      border-bottom: 1px solid #d9dfe2
+    }
+
+    #chatName {
+      font-size: 16px;
+      color: #111b21
+    }
+
+    #chatInfo {
+      font-size: 12px;
+      color: var(--wa-muted);
+      margin-top: 3px
+    }
+
+    #chathead .btn,
+    .chathead .btn {
+      padding: 8px 11px
+    }
+
+    .messages {
+      background-color: var(--wa-chat);
+      background-image: radial-gradient(#b8ad9d20 .8px, transparent .8px);
+      background-size: 18px 18px;
+      padding: 22px 5%;
+      gap: 7px
+    }
+
+    .rowmsg {
+      width: 100%
+    }
+
+    .bubble {
+      position: relative;
+      max-width: min(78%, 620px);
+      padding: 8px 10px 6px;
+      background: #fff;
+      border: 0;
+      border-radius: 8px;
+      box-shadow: 0 1px 1px #00000014;
+      color: #111b21;
+      font-size: 14px;
+      line-height: 1.4
+    }
+
+    .mine .bubble {
+      background: #d9fdd3;
+      border: 0
+    }
+
+    .time {
+      font-size: 10px;
+      color: #667781;
+      margin-top: 4px
+    }
+
+    .composer {
+      align-items: flex-end;
+      padding: 12px 16px;
+      background: #f0f2f5;
+      border-top: 1px solid #e2e6e8;
+      gap: 10px
+    }
+
+    .composer textarea {
+      font: 14px Arial, Helvetica, sans-serif;
+      max-height: 120px;
+      border: 0;
+      border-radius: 9px;
+      padding: 12px 14px;
+      background: #fff;
+      outline: none;
+      box-shadow: 0 1px 1px #00000008
+    }
+
+    .composer textarea:focus {
+      box-shadow: 0 0 0 1px #a7d6cc
+    }
+
+    #send {
+      min-width: 72px;
+      padding: 11px 15px;
+      border-radius: 8px
+    }
+
+    .status {
+      background: #f8f9fa;
+      padding: 7px 14px;
+      border-top: 1px solid #e6e9e7;
+      color: #667781
+    }
+
+    .empty {
+      color: #667781;
+      font-size: 14px
+    }
+
+    #friendsTab,
+    #historyTab {
+      border-radius: 7px
+    }
+
+    .overlay {
+      background: #101b22f5
+    }
+
+    .incoming {
+      border: 1px solid #e3e7e8;
+      box-shadow: 0 8px 30px #0002
+    }
+
+    @media(max-width:800px) {
+      .top {
+        height: 58px;
+        padding: 9px 12px;
+        gap: 8px
+      }
+
+      .top strong {
+        font-size: 18px
+      }
+
+      .top>div {
+        display: flex;
+        gap: 5px
+      }
+
+      .top .btn {
+        padding: 7px 8px;
+        font-size: 11px
+      }
+
+      .layout {
+        height: calc(100dvh - 58px);
+        padding: 0;
+        display: block
+      }
+
+      .panel {
+        height: 100%;
+        border-radius: 0
+      }
+
+      #sidebar {
+        border-right: 0
+      }
+
+      #chat {
+        display: none
+      }
+
+      #chat.show {
+        display: flex
+      }
+
+      .head {
+        padding: 12px
+      }
+
+      .person {
+        min-height: 68px;
+        padding: 11px 13px
+      }
+
+      .chathead {
+        padding: 10px 12px;
+        min-height: 62px
+      }
+
+      .messages {
+        padding: 16px 12px
+      }
+
+      .bubble {
+        max-width: 88%
+      }
+
+      .composer {
+        padding: 9px;
+        gap: 7px
+      }
+
+      .composer textarea {
+        padding: 11px 12px
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="top"><strong>🗺️ ChatMap</strong>
+    <div><button class="btn secondary" id="mapBtn">Open map</button> <button class="btn secondary"
+        id="dashboard">Dashboard</button> <button class="btn secondary" id="logout">Log out</button></div>
+  </header>
+  <main class="layout">
+    <section class="panel show" id="sidebar">
+      <div class="head">
+        <div style="display:flex;gap:7px;margin-bottom:10px"><button class="btn" id="friendsTab">Friends</button><button
+            class="btn secondary" id="historyTab">Chat history</button></div><input id="search" class="search"
+          placeholder="Search friends…">
+      </div>
+      <div class="list" id="friendsView">
+        <div class="empty">Loading friends…</div>
+      </div>
+      <div class="list" id="historyView" style="display:none">
+        <div class="empty">Loading chat history…</div>
+      </div>
+    </section>
+    <section class="panel" id="chat">
+      <div class="chathead">
+        <div><strong id="chatName">Choose a student</strong>
+          <div class="sub" id="chatInfo">Messages appear here</div>
+        </div>
+        <div><button class="btn" id="audio" disabled>☎ Audio</button> <button class="btn" id="video" disabled>▣
+            Video</button></div>
+      </div>
+      <div class="messages" id="messages">
+        <div class="empty">Choose a student to start chatting.</div>
+      </div>
+      <form class="composer" id="form"><textarea id="message" rows="1" maxlength="4000" placeholder="Write a message…"
+          disabled></textarea><button class="btn" id="send" disabled>Send</button></form>
+      <div class="status" id="status">Connecting…</div>
+    </section>
+  </main>
+  <section class="overlay" id="call">
+    <div><strong id="callTitle">ChatMap call</strong><span id="callStatus" style="float:right">Connecting…</span></div>
+    <div class="videos"><video id="remote" autoplay playsinline></video><video id="local" autoplay muted
+        playsinline></video></div>
+    <div class="controls"><button class="btn secondary" id="mute">Mute mic</button><button class="btn secondary"
+        id="cam">Turn camera off</button><button class="btn danger" id="hangup">Hang up</button></div>
+  </section>
+  <aside class="incoming" id="incoming"><strong>Incoming call</strong>
+    <p id="incomingText">Someone is calling.</p><button class="btn" id="accept">Accept</button> <button
+      class="btn danger" id="reject">Reject</button>
+  </aside>
+  <script>
+    (() => {
+      "use strict";
+      const URL = "https://dvuhlrjlicimddlastjf.supabase.co", KEY = "sb_publishable_pK48pe9oQiCXEvTH6a-eOA_LhDU8Oh4";
+      const db = window.supabase.createClient(URL, KEY), $ = id => document.getElementById(id);
+      const s = { user: null, profile: null, profiles: [], conversations: [], conversation: null, partner: null, msgChannel: null, callChannel: null, pc: null, stream: null, pending: null, ids: new Set(), muted: false, cameraOff: false, tab: "friends", latest: {} };
+      const say = (t, e = false) => { $("status").textContent = t; $("status").classList.toggle("error", e) };
+      const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+      const initials = n => (n || "?").trim().split(/\s+/).slice(0, 2).map(x => x[0] || "").join("").toUpperCase();
+      const summary = p => [p.course, p.branch, p.study_year ? `Year ${p.study_year}` : ""].filter(Boolean).join(" · ") || "Student";
+      function mobile(id) { if (matchMedia("(max-width:800px)").matches) ["sidebar", "chat"].forEach(x => $(x).classList.toggle("show", x === id)) }
+      function switchTab(tab) { s.tab = tab; $("friendsView").style.display = tab === "friends" ? "" : "none"; $("historyView").style.display = tab === "history" ? "" : "none"; $("friendsTab").className = tab === "friends" ? "btn" : "btn secondary"; $("historyTab").className = tab === "history" ? "btn" : "btn secondary"; $("search").placeholder = tab === "friends" ? "Search friends…" : "Search chat history…"; renderSidebar() }
+      async function init() {
+        const { data, error } = await db.auth.getUser(); if (error || !data.user) { location.href = "login.html?next=chat.html"; return } s.user = data.user;
+        const pr = await db.from("student_profiles").select("user_id,nickname,university_id,education_level,course,branch,study_year").eq("user_id", s.user.id).maybeSingle();
+        if (pr.error) throw pr.error; if (!pr.data) { location.href = "mapregister.html"; return } s.profile = pr.data;
+        const [ps, cs] = await Promise.all([
+          db.from("student_profiles").select("user_id,nickname,course,branch,study_year,education_level").neq("user_id", s.user.id).order("nickname"),
+          db.from("conversations").select("id,user_a,user_b,created_at").or(`user_a.eq.${s.user.id},user_b.eq.${s.user.id}`).order("created_at", { ascending: false })
+        ]);
+        if (ps.error) throw ps.error; if (cs.error) throw cs.error; s.profiles = ps.data || []; s.conversations = cs.data || [];
+        await loadLatest(); renderSidebar(); say(`Signed in as ${s.profile.nickname}. Choose a friend or open the map to connect with students.`); mobile("sidebar"); switchTab("friends");
+      }
+      async function loadLatest() {
+        const ids = s.conversations.map(c => c.id); if (!ids.length) return;
+        const r = await db.from("messages").select("conversation_id,created_at").in("conversation_id", ids).order("created_at", { ascending: false }).limit(1000);
+        if (r.error) { console.warn("Could not sort history by recent message", r.error); return }
+        (r.data || []).forEach(m => { if (!s.latest[m.conversation_id]) s.latest[m.conversation_id] = m.created_at });
+      }
+      function partner(c) { let id = c.user_a === s.user.id ? c.user_b : c.user_a; return s.profiles.find(p => p.user_id === id) || { user_id: id, nickname: "Student" } }
+      function renderSidebar() {
+        const q = $("search").value.toLowerCase().trim();
+        const friends = s.profiles.filter(p => `${p.nickname} ${p.course || ""} ${p.branch || ""}`.toLowerCase().includes(q)).sort((a, b) => a.nickname.localeCompare(b.nickname));
+        const history = [...s.conversations].filter(c => { let p = partner(c); return `${p.nickname} ${p.course || ""} ${p.branch || ""}`.toLowerCase().includes(q) }).sort((a, b) => new Date(s.latest[b.id] || b.created_at) - new Date(s.latest[a.id] || a.created_at));
+        $("friendsView").innerHTML = friends.length ? "" : '<div class="empty">No other student profiles found. Register another test account or check student_profiles permissions.</div>';
+        friends.forEach(p => { let b = document.createElement("button"); b.className = "person"; b.innerHTML = `<div class="avatar">${esc(initials(p.nickname))}</div><div><div class="name">${esc(p.nickname)}</div><div class="sub">${esc(summary(p))}</div></div>`; b.onclick = () => { let c = s.conversations.find(x => (x.user_a === p.user_id && x.user_b === s.user.id) || (x.user_b === p.user_id && x.user_a === s.user.id)); if (c) openChat(c, p); else startConversation(p) }; $("friendsView").appendChild(b) });
+        $("historyView").innerHTML = history.length ? "" : '<div class="empty">No chat history yet.</div>';
+        history.forEach(c => { let p = partner(c), b = document.createElement("button"); b.className = "person"; let when = s.latest[c.id] || c.created_at; b.innerHTML = `<div class="avatar">${esc(initials(p.nickname))}</div><div><div class="name">${esc(p.nickname)}</div><div class="sub">${esc(summary(p))}</div><div class="sub">${esc(new Date(when).toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }))}</div></div>`; b.onclick = () => openChat(c, p); $("historyView").appendChild(b) });
+      }
+      async function startConversation(p) { try { say("Opening conversation…"); let r = await db.rpc("chatmap_get_or_create_conversation", { p_other_user_id: p.user_id }); if (r.error) throw r.error; let id = typeof r.data === "string" ? r.data : r.data?.id; if (!id) throw Error("Conversation RPC returned no ID."); let c = s.conversations.find(x => x.id === id); if (!c) { let f = await db.from("conversations").select("id,user_a,user_b,created_at").eq("id", id).single(); if (f.error) throw f.error; c = f.data; s.conversations.unshift(c); renderSidebar() } await openChat(c, p) } catch (e) { say(e.message, true); console.error(e) } }
+      async function openChat(c, p) {
+        if (s.msgChannel) await db.removeChannel(s.msgChannel); if (s.callChannel && !s.pc) { await db.removeChannel(s.callChannel); s.callChannel = null } s.conversation = c; s.partner = p || partner(c); s.ids.clear(); $("chatName").textContent = s.partner.nickname; $("chatInfo").textContent = summary(s.partner); $("message").disabled = $("send").disabled = $("audio").disabled = $("video").disabled = false; $("messages").innerHTML = "";
+        let r = await db.from("messages").select("id,sender_id,content,created_at").eq("conversation_id", c.id).order("created_at", { ascending: true }).limit(300); if (r.error) throw r.error; (r.data || []).forEach(addMessage); if (!r.data?.length) $("messages").innerHTML = '<div class="empty">Say hello to start the conversation.</div>';
+        s.msgChannel = db.channel("messages:" + c.id).on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `conversation_id=eq.${c.id}` }, e => addMessage(e.new)).subscribe(st => { if (st === "CHANNEL_ERROR") say("Realtime messages failed; check Realtime publication.", true) });
+        subscribeCalls(c.id); mobile("chat"); say("Conversation ready.");
+      }
+      function addMessage(m) { if (!m || s.ids.has(m.id)) return; s.ids.add(m.id); $("messages").querySelector(".empty")?.remove(); let mine = m.sender_id === s.user.id, row = document.createElement("div"); row.className = "rowmsg" + (mine ? " mine" : ""); row.innerHTML = `<div class="bubble">${esc(m.content)}<div class="time">${mine ? "You" : esc(s.partner?.nickname || "Student")} · ${esc(new Date(m.created_at).toLocaleString([], { hour: "2-digit", minute: "2-digit", month: "short", day: "numeric" }))}</div></div>`; $("messages").appendChild(row); $("messages").scrollTop = $("messages").scrollHeight }
+      async function sendMessage(e) { e.preventDefault(); let content = $("message").value.trim(); if (!content || !s.conversation) return; $("send").disabled = true; try { let r = await db.from("messages").insert({ conversation_id: s.conversation.id, sender_id: s.user.id, content }).select("id,sender_id,content,created_at").single(); if (r.error) throw r.error; addMessage(r.data); $("message").value = ""; say("Message sent.") } catch (e) { say(e.message, true) } finally { $("send").disabled = false } }
+      function subscribeCalls(id) { if (s.callChannel) db.removeChannel(s.callChannel); s.callChannel = db.channel("call:" + id, { config: { private: true } }).on("broadcast", { event: "signal" }, ({ payload }) => signal(payload)).subscribe(st => { if (st === "CHANNEL_ERROR" || st === "TIMED_OUT") say("Call signaling blocked. Apply the Realtime security SQL supplied with this page.", true) }) }
+      async function sendSignal(data) { if (!s.callChannel || s.callChannel.state !== "joined") throw Error("Call channel is not ready. Reopen this chat and retry."); let r = await s.callChannel.send({ type: "broadcast", event: "signal", payload: { ...data, from: s.user.id, conversationId: s.conversation.id } }); if (r !== "ok") throw Error("Call signal failed; check Realtime policies.") }
+      function makePC() { let pc = new RTCPeerConnection({ iceServers: [{ urls: "stun:stun.l.google.com:19302" }, { urls: "stun:stun1.l.google.com:19302" }] }); pc.onicecandidate = e => { if (e.candidate) sendSignal({ type: "ice", candidate: e.candidate }).catch(console.error) }; pc.ontrack = e => $("remote").srcObject = e.streams[0]; pc.onconnectionstatechange = () => { $("callStatus").textContent = pc.connectionState === "connected" ? "Connected" : pc.connectionState }; s.pc = pc; return pc }
+      async function media(mode) { if (!navigator.mediaDevices?.getUserMedia) throw Error("Camera/mic requires HTTPS or localhost."); s.stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: mode === "video" }); $("local").srcObject = s.stream; $("local").style.display = mode === "video" ? "block" : "none"; $("cam").style.display = mode === "video" ? "inline-block" : "none"; return s.stream }
+      function showCall(mode) { $("call").classList.add("open"); $("callTitle").textContent = `${mode === "video" ? "Video" : "Audio"} call with ${s.partner.nickname}`; $("callStatus").textContent = "Connecting…" }
+      async function startCall(mode) { try { if (!s.callChannel || s.callChannel.state !== "joined") throw Error("Call channel is connecting; retry in a moment."); let stream = await media(mode), pc = makePC(); stream.getTracks().forEach(t => pc.addTrack(t, stream)); let offer = await pc.createOffer(); await pc.setLocalDescription(offer); showCall(mode); await sendSignal({ type: "offer", description: pc.localDescription, mode }) } catch (e) { await cleanup(false); say(e.message, true) } }
+      async function signal(p) {
+        if (!p || p.from === s.user.id || p.conversationId !== s.conversation?.id) return; if (p.type === "offer") { if (s.pc) { sendSignal({ type: "busy" }).catch(() => { }); return } s.pending = p; $("incomingText").textContent = `${s.partner.nickname} is starting a ${p.mode || "video"} call.`; $("incoming").classList.add("open") }
+        else if (p.type === "answer" && s.pc) await s.pc.setRemoteDescription(p.description);
+        else if (p.type === "ice" && s.pc && p.candidate) { try { await s.pc.addIceCandidate(p.candidate) } catch (e) { console.warn(e) } }
+        else if (p.type === "hangup") { await cleanup(false); say("The other student ended the call.") }
+        else if (p.type === "reject") { await cleanup(false); say("Call declined.") }
+        else if (p.type === "busy") say("The other student is busy.")
+      }
+      async function accept() { let p = s.pending; if (!p) return; $("incoming").classList.remove("open"); try { let stream = await media(p.mode || "video"), pc = makePC(); stream.getTracks().forEach(t => pc.addTrack(t, stream)); await pc.setRemoteDescription(p.description); let answer = await pc.createAnswer(); await pc.setLocalDescription(answer); showCall(p.mode || "video"); await sendSignal({ type: "answer", description: pc.localDescription }); s.pending = null } catch (e) { await cleanup(false); say(e.message, true) } }
+      async function cleanup(notify = true) { if (notify && s.pc) try { await sendSignal({ type: "hangup" }) } catch (e) { } if (s.stream) s.stream.getTracks().forEach(t => t.stop()); if (s.pc) s.pc.close(); s.stream = null; s.pc = null; $("local").srcObject = $("remote").srcObject = null; $("call").classList.remove("open"); $("incoming").classList.remove("open"); s.pending = null; s.muted = s.cameraOff = false; $("mute").textContent = "Mute mic"; $("cam").textContent = "Turn camera off" }
+      $("search").addEventListener("input", renderSidebar); $("friendsTab").onclick = () => switchTab("friends"); $("historyTab").onclick = () => switchTab("history"); $("mapBtn").onclick = () => location.href = "map.html"; $("form").addEventListener("submit", sendMessage); $("message").addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("form").requestSubmit() } });
+      $("audio").onclick = () => startCall("audio"); $("video").onclick = () => startCall("video"); $("accept").onclick = accept; $("reject").onclick = async () => { try { await sendSignal({ type: "reject" }) } catch (e) { } $("incoming").classList.remove("open"); s.pending = null }; $("hangup").onclick = () => cleanup(true);
+      $("mute").onclick = () => { if (!s.stream) return; s.muted = !s.muted; s.stream.getAudioTracks().forEach(t => t.enabled = !s.muted); $("mute").textContent = s.muted ? "Unmute mic" : "Mute mic" };
+      $("cam").onclick = () => { if (!s.stream) return; s.cameraOff = !s.cameraOff; s.stream.getVideoTracks().forEach(t => t.enabled = !s.cameraOff); $("cam").textContent = s.cameraOff ? "Turn camera on" : "Turn camera off" };
+      $("dashboard").onclick = () => location.href = "dashboard.html"; $("logout").onclick = async () => { await cleanup(false); await db.auth.signOut(); location.href = "login.html" };
+      window.addEventListener("beforeunload", () => s.stream?.getTracks().forEach(t => t.stop()));
+      init().then(async () => {
+        const target = new URLSearchParams(location.search).get("user");
+        if (target && target !== s.user.id) {
+          const p = s.profiles.find(x => x.user_id === target);
+          if (p) await startConversation(p);
+          else say("That student profile was not found or is not visible.", true);
+        }
+      }).catch(e => { console.error(e); say(e.message || "Could not load ChatMap; check Supabase permissions.", true) });
+    })();
+  </script>
+</body>
+
+</html>
